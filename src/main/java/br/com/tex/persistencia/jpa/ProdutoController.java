@@ -23,7 +23,7 @@ public class ProdutoController {
 
     @GetMapping
     public List<Produto> lista(){
-        return (List<Produto>) this.dao.findAll();
+        return this.dao.findAll();
     }
 
     @GetMapping("/{id}")

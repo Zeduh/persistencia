@@ -1,7 +1,17 @@
 package br.com.tex.persistencia.jpa;
 
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.repository.Repository;
 
-public interface ProdutoRepository extends CrudRepository<Produto, Integer> {
+import java.util.List;
+import java.util.Optional;
+
+public interface ProdutoRepository extends Repository<Produto, Integer> {
+    void save(Produto produto);
+
+    List<Produto> findAll();
+
+    Optional<Produto> findById(Integer id);
+
+    void deleteById(Integer id);
 }
