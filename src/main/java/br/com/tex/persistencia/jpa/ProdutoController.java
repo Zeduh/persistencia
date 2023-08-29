@@ -1,45 +1,49 @@
 package br.com.tex.persistencia.jpa;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/produtos")
 public class ProdutoController {
 
     @Autowired
-    private ProdutoDao dao;
+    private ProdutoRepository dao;
 
     @Transactional
     @PostMapping
     public void cadastra(@RequestBody Produto produto){
-        this.dao.cadastra(produto);
+        this.dao.save(produto);
     }
 
     @GetMapping
     public List<Produto> lista(){
-        return this.dao.lista();
+        return (List<Produto>) this.dao.findAll();
     }
 
     @GetMapping("/{id}")
-    public Produto buscaPor(@PathVariable Integer id){
-        return this.dao.buscaPor(id);
+    public ResponseEntity<Produto> buscaPor(@PathVariable Integer id){
+        Optional<Produto> optionalProduto = this.dao.findById(id);
+        if(optionalProduto.isEmpty())
+            return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(this.dao.findById(id).get());
     }
 
     @Transactional
     @DeleteMapping("/{id}")
     public void deleta(@PathVariable Integer id){
-        this.dao.remove(id);
+        this.dao.deleteById(id);
     }
 
     @Transactional
     @PutMapping
     public void altera(@RequestBody Produto produto){
-        Produto produtoCadastrado = this.dao.buscaPor(produto.getId());
-        produtoCadastrado.setPreco(produto.getPreco());
+        this.dao.save(produto);
     }
 
 }
